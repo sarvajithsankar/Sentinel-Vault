@@ -1,18 +1,29 @@
-# Sentinel-Vault 🛡️
+# Sentinel-Vault
 
-A high-performance C++ Security Information and Event Management (SIEM) prototype.
+Sentinel-Vault is a C++ SIEM prototype with scored blacklist detection, RAID 1 vault storage, a FastAPI layer, AI analysis, and a React dashboard.
 
-## Key Features
-- **Fast Ingestion:** Parses raw auth logs into structured memory.
-- **Merge Sort Chronology:** Reconstructs event timelines in $O(n \log n)$ time.
-- **AVL Tree Threat Engine:** Real-time IP blacklisting with logarithmic lookup speeds.
-- **RAID 1 Persistence:** Binary vault storage with automated mirror recovery.
+```mermaid
+flowchart LR
+    L[Log Ingestor] --> A[AVL Engine]
+    A --> V[Vault]
+    V --> F[FastAPI]
+    F --> I[AI Layer]
+    I --> R[React UI]
+```
 
-## Tech Stack
-- **Language:** C++17
-- **Data Structures:** AVL Trees, Vectors, Bit-fields
-- **Algorithms:** Merge Sort, Binary I/O, RAID 1 Logic
+## Setup
 
-## How to Run
-1. `g++ -Iinclude src/main.cpp src/SentinelVault.cpp -o bin/Sentinel-Vault`
-2. `./bin/Sentinel-Vault`
+```bash
+docker-compose up
+```
+
+The dashboard is available at `http://localhost:3000` and the API at `http://localhost:8000`.
+
+## Endpoint reference
+
+| Endpoint | Description |
+| --- | --- |
+| `GET /events?page=1&page_size=50` | Paginated vault events with status and threat score. |
+| `GET /threats` | Blacklisted IPs and their scores. |
+| `GET /stats` | Event totals, detected threats, mirror count, and last sync time. |
+| `POST /analyze` | IsolationForest analysis for `ip_freq`, `hour`, and `event_type_encoded`. |

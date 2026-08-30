@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sentinel-Vault | Security Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  </head>
+  <body class="min-h-screen bg-slate-950 text-slate-100 antialiased">
+    <div id="root"></div>
+
+    <script type="text/babel">
+      const events = [
+        { timestamp: "2026-08-30 01:42:18", ip: "192.168.1.24", type: "SSH Login", status: "Normal" },
+        { timestamp: "2026-08-30 01:39:51", ip: "45.142.212.61", type: "Failed Login", status: "Threat" },
+        { timestamp: "2026-08-30 01:33:07", ip: "10.0.0.18", type: "Vault Read", status: "Normal" },
+        { timestamp: "2026-08-30 01:29:44", ip: "185.220.101.33", type: "Port Scan", status: "Threat" },
+        { timestamp: "2026-08-30 01:24:30", ip: "172.16.4.92", type: "RAID Sync", status: "Normal" },
+        { timestamp: "2026-08-30 01:18:16", ip: "91.108.4.173", type: "Brute Force", status: "Threat" },
+        { timestamp: "2026-08-30 01:12:03", ip: "192.168.1.11", type: "Policy Check", status: "Normal" },
+        { timestamp: "2026-08-30 01:06:37", ip: "103.149.12.89", type: "Blacklist Match", status: "Threat" },
+      ];
+
+      const blacklistedIPs = ["45.142.212.61", "185.220.101.33", "91.108.4.173", "103.149.12.89"];
+
+      function StatusBadge({ status }) {
+        const threat = status === "Threat";
+        return (
+          <span className={`inline-flex items-center gap-2 rounded-full border px-3 py-1 text-xs font-semibold ${threat ? "border-red-500/30 bg-red-500/10 text-red-300" : "border-emerald-500/30 bg-emerald-500/10 text-emerald-300"}`}>
+            <span className={`h-1.5 w-1.5 rounded-full ${threat ? "bg-red-400" : "bg-emerald-400"}`}></span>
+            {status}
+          </span>
+        );
+      }
+
+      function App() {
+        const threatCount = events.filter((event) => event.status === "Threat").length;
+
+        return (
+          <main className="mx-auto max-w-7xl px-5 py-10 sm:px-8">
+            <header className="mb-8 flex flex-col gap-4 border-b border-slate-800 pb-7 sm:flex-row sm:items-end sm:justify-between">
+              <div>
+                <div className="mb-3 flex items-center gap-3 text-cyan-300">
+                  <span className="grid h-10 w-10 place-items-center rounded-xl border border-cyan-400/30 bg-cyan-400/10 text-xl">◈</span>
+                  <span className="text-sm font-semibold tracking-[0.22em]">SENTINEL-VAULT</span>
+                </div>
+                <h1 className="text-3xl font-bold tracking-tight text-white">Security overview</h1>
+                <p className="mt-2 text-sm text-slate-400">C++ SIEM prototype · live mock telemetry</p>
+              </div>
+              <div className="inline-flex w-fit items-center gap-2 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-3 py-1.5 text-sm font-medium text-emerald-300">
+                <span className="h-2 w-2 rounded-full bg-emerald-400"></span>
+                Monitoring active
+              </div>
+            </header>
+
+            <section aria-label="System statistics" className="mb-8 grid gap-4 md:grid-cols-3">
+              {[
+                ["Total Events", events.length, "In current session", "text-cyan-300"],
+                ["Threats Detected", threatCount, "Requires review", "text-red-300"],
+                ["Vault Mirrors Active", 2, "RAID 1 protected", "text-violet-300"],
+              ].map(([label, value, detail, color]) => (
+                <article key={label} className="rounded-2xl border border-slate-800 bg-slate-900/70 p-5 shadow-xl shadow-slate-950/20">
+                  <p className="text-sm font-medium text-slate-400">{label}</p>
+                  <p className={`mt-3 text-4xl font-bold ${color}`}>{value}</p>
+                  <p className="mt-2 text-xs text-slate-500">{detail}</p>
+                </article>
+              ))}
+            </section>
+
+            <section className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_280px]">
+              <article className="overflow-hidden rounded-2xl border border-slate-800 bg-slate-900/70 shadow-xl shadow-slate-950/20">
+                <div className="flex items-center justify-between border-b border-slate-800 px-5 py-4">
+                  <div>
+                    <h2 className="font-semibold text-white">Event log</h2>
+                    <p className="mt-1 text-xs text-slate-500">Latest ingested security events</p>
+                  </div>
+                  <span className="rounded-md bg-slate-800 px-2.5 py-1 text-xs font-medium text-slate-300">{events.length} events</span>
+                </div>
+                <div className="overflow-x-auto">
+                  <table className="w-full min-w-[700px] text-left text-sm">
+                    <thead className="bg-slate-900 text-xs uppercase tracking-wider text-slate-500">
+                      <tr>
+                        <th className="px-5 py-3 font-medium">Timestamp</th>
+                        <th className="px-5 py-3 font-medium">IP</th>
+                        <th className="px-5 py-3 font-medium">Event Type</th>
+                        <th className="px-5 py-3 font-medium">Status</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-slate-800">
+                      {events.map((event) => (
+                        <tr key={`${event.timestamp}-${event.ip}`} className="transition hover:bg-slate-800/50">
+                          <td className="whitespace-nowrap px-5 py-4 font-mono text-xs text-slate-400">{event.timestamp}</td>
+                          <td className="px-5 py-4 font-mono text-sm text-cyan-200">{event.ip}</td>
+                          <td className="px-5 py-4 text-slate-200">{event.type}</td>
+                          <td className="px-5 py-4"><StatusBadge status={event.status} /></td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </article>
+
+              <aside className="rounded-2xl border border-slate-800 bg-slate-900/70 p-5 shadow-xl shadow-slate-950/20">
+                <div className="mb-5">
+                  <h2 className="font-semibold text-white">Threat panel</h2>
+                  <p className="mt-1 text-xs text-slate-500">AVL tree blacklist</p>
+                </div>
+                <ul className="space-y-3">
+                  {blacklistedIPs.map((ip) => (
+                    <li key={ip} className="rounded-xl border border-red-500/15 bg-red-500/5 p-3">
+                      <p className="font-mono text-sm text-slate-200">{ip}</p>
+                      <span className="mt-2 inline-flex rounded-md bg-red-500/15 px-2 py-0.5 text-[11px] font-semibold uppercase tracking-wide text-red-300">Blacklisted</span>
+                    </li>
+                  ))}
+                </ul>
+              </aside>
+            </section>
+          </main>
+        );
+      }
+
+      ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+    </script>
+  </body>
+</html>

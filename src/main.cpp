@@ -14,13 +14,20 @@ void displayMenu() {
     cout << "4. Secure Vault (Save Binary + RAID 1)" << endl;
     cout << "5. Restore Vault (Load Binary/RAID)" << endl;
     cout << "6. Run Security Scan" << endl;
+    cout << "7. Watch Log File" << endl;
     cout << "0. Exit System" << endl;
     cout << "----------------------------------------" << endl;
     cout << "Enter command: ";
 }
 
-int main() {
+int main(int argc, char* argv[]) {
     SentinelVault myVault;
+    if (argc > 1 && string(argv[1]) == "--watch") {
+        myVault.loadLogsFromFile("data/auth.log");
+        myVault.saveToBinaryVault("data/secure.vault");
+        myVault.watchLogs("data/auth.log", "data/secure.vault");
+        return 0;
+    }
     int choice;
     string ip;
 
@@ -53,6 +60,9 @@ int main() {
                 break;
             case 6:
                 myVault.runSecurityScan();
+                break;
+            case 7:
+                myVault.watchLogs("data/auth.log", "data/secure.vault");
                 break;
             default:
                 cout << "[?] Invalid command. Access Denied." << endl;

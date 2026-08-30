@@ -1,0 +1,16 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+* { box-sizing: border-box; }
+body { margin: 0; background: white; color: black; font-family: Arial, sans-serif; }
+main { max-width: 1100px; margin: 0 auto; padding: 32px 20px; }
+header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #d1d5db; padding-bottom: 20px; }
+h1, h2, p { margin: 0; } h1 { font-size: 24px; } header p { color: #4b5563; margin-top: 4px; } h2 { font-size: 18px; margin-bottom: 12px; }
+button { background: white; border: 1px solid #9ca3af; color: black; padding: 8px 14px; cursor: pointer; }
+.stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin: 24px 0; }
+.stats article, section { border: 1px solid #d1d5db; padding: 16px; margin-bottom: 20px; }
+.stats p { color: #4b5563; } .stats strong { display: block; font-size: 32px; margin-top: 8px; }
+table { width: 100%; border-collapse: collapse; text-align: left; } th, td { border-top: 1px solid #d1d5db; padding: 10px 8px; font-size: 14px; } th { color: #4b5563; }
+.threats { list-style: none; margin: 0; padding: 0; } .threats li { border-top: 1px solid #d1d5db; display: flex; justify-content: space-between; padding: 10px 0; } .high-score { color: #dc2626; }
+.raid > div { border-top: 1px solid #d1d5db; display: grid; grid-template-columns: 1fr 2fr auto; gap: 16px; padding: 10px 0; } .raid b { font-weight: normal; }
+@media (max-width: 600px) { .stats { grid-template-columns: 1fr; } .raid > div { grid-template-columns: 1fr; gap: 4px; } table { min-width: 650px; } section { overflow-x: auto; } }
