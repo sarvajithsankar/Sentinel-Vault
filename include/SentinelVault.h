@@ -12,11 +12,14 @@ class SentinelVault {
 private:
     vector<LogEntry> logs;
     node* blacklist;
+    int calculateThreatScore(const LogEntry& entry) const;
+    bool ingestLogLine(const string& line);
 
 public:
     SentinelVault();
     void addToBlacklist(string ip);
     void loadLogsFromFile(string filename);
+    void watchLogs(const string& filename, const string& vaultFilename);
     void performSort();
     void runSecurityScan();
 
