@@ -12,15 +12,12 @@ struct LogEntry{
     string ipAddress;
     string action;
     int severity;
-    int threatScore = 0;
-    bool blacklisted = false;
 
     void printLog() const {
         cout << "[" << timestamp << "] "
              << "IPADRESS: " << ipAddress << " "
              << "ACTION: " << action << " "
-             << "SEVERITY: " << severity << " "
-             << "THREAT SCORE: " << threatScore << endl;
+             << "SEVERITY: " << severity << endl;
     }
 };
 

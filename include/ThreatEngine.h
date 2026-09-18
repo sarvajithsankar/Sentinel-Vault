@@ -12,16 +12,12 @@ struct node{
     node* left;
     node* right;
     int height;
-    bool blacklisted;
-    int threat_score;
 
-    node (string ip, int score = 0){
+    node (string ip){
         ipAdress = ip;
         left = nullptr;
         right = nullptr;
         height = 1;
-        blacklisted = true;
-        threat_score = score;
     }
 };
 
@@ -65,19 +61,17 @@ inline node* left_rotate(node* x){
     return y;
 }
 
-inline node* insert(node* root,string ipAddress, int threatScore = 0){
+inline node* insert(node* root,string ipAddress){
     if (root == nullptr){
-        return new node(ipAddress, threatScore);
+        return new node(ipAddress);
     }
     if (ipAddress < root->ipAdress){
-        root->left = insert(root->left,ipAddress, threatScore);
+        root->left = insert(root->left,ipAddress);
     }
     else if (ipAddress > root->ipAdress){
-        root->right = insert(root->right,ipAddress, threatScore);
+        root->right = insert(root->right,ipAddress);
     }
     else{
-        root->blacklisted = true;
-        root->threat_score = max(root->threat_score, threatScore);
         return root;
     }
     root->height = 1 + max(getheight(root->left), getheight(root->right));
@@ -108,19 +102,12 @@ inline bool isblacklisted (node* root,string ipAddress){
         return false;
     }
     else if (ipAddress == root->ipAdress){
-        return root->blacklisted;
+        return true;
     }
     else if (ipAddress < root->ipAdress){
         return isblacklisted(root->left,ipAddress);
     }
     return isblacklisted(root->right,ipAddress);
-}
-
-inline int getThreatScore(node* root, const string& ipAddress){
-    if (root == nullptr) return 0;
-    if (ipAddress == root->ipAdress) return root->threat_score;
-    if (ipAddress < root->ipAdress) return getThreatScore(root->left, ipAddress);
-    return getThreatScore(root->right, ipAddress);
 }
 
 #endif
